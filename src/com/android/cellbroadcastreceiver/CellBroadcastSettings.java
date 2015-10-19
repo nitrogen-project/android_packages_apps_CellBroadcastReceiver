@@ -22,12 +22,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.os.UserManager;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
+import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.telephony.CarrierConfigManager;
 import android.telephony.TelephonyManager;
@@ -114,18 +114,18 @@ public class CellBroadcastSettings extends PreferenceActivity {
     private TabWidget mTabWidget;
     private List<SubscriptionInfo> mSelectableSubInfos;
 
-    private CheckBoxPreference mExtremeCheckBox;
-    private CheckBoxPreference mSevereCheckBox;
-    private CheckBoxPreference mAmberCheckBox;
-    private CheckBoxPreference mEmergencyCheckBox;
+    private SwitchPreference mExtremeSwitchPreference;
+    private SwitchPreference mSevereSwitchPreference;
+    private SwitchPreference mAmberSwitchPreference;
+    private SwitchPreference mEmergencySwitchPreference;
     private ListPreference mAlertDuration;
     private ListPreference mReminderInterval;
-    private CheckBoxPreference mVibrateCheckBox;
-    private CheckBoxPreference mSpeechCheckBox;
-    private CheckBoxPreference mEtwsTestCheckBox;
-    private CheckBoxPreference mChannel50CheckBox;
-    private CheckBoxPreference mCmasCheckBox;
-    private CheckBoxPreference mOptOutCheckBox;
+    private SwitchPreference mVibrateSwitchPreference;
+    private SwitchPreference mSpeechSwitchPreference;
+    private SwitchPreference mEtwsTestSwitchPreference;
+    private SwitchPreference mChannel50SwitchPreference;
+    private SwitchPreference mCmasSwitchPreference;
+    private SwitchPreference mOptOutSwitchPreference;
     private PreferenceCategory mAlertCategory;
 
     @Override
@@ -181,46 +181,46 @@ public class CellBroadcastSettings extends PreferenceActivity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
 
-            mExtremeCheckBox = (CheckBoxPreference)
+            mExtremeSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_CMAS_EXTREME_THREAT_ALERTS);
-            mSevereCheckBox = (CheckBoxPreference)
+            mSevereSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_CMAS_SEVERE_THREAT_ALERTS);
-            mAmberCheckBox = (CheckBoxPreference)
+            mAmberSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_CMAS_AMBER_ALERTS);
-            mEmergencyCheckBox = (CheckBoxPreference)
+            mEmergencySwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_EMERGENCY_ALERTS);
             mAlertDuration = (ListPreference)
                     findPreference(KEY_ALERT_SOUND_DURATION);
             mReminderInterval = (ListPreference)
                     findPreference(KEY_ALERT_REMINDER_INTERVAL);
-            mVibrateCheckBox = (CheckBoxPreference)
+            mVibrateSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_ALERT_VIBRATE);
-            mSpeechCheckBox = (CheckBoxPreference)
+            mSpeechSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_ALERT_SPEECH);
-            mEtwsTestCheckBox = (CheckBoxPreference)
+            mEtwsTestSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_ETWS_TEST_ALERTS);
-            mChannel50CheckBox = (CheckBoxPreference)
+            mChannel50SwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_CHANNEL_50_ALERTS);
-            mCmasCheckBox = (CheckBoxPreference)
+            mCmasSwitchPreference = (SwitchPreference)
                     findPreference(KEY_ENABLE_CMAS_TEST_ALERTS);
-            mOptOutCheckBox = (CheckBoxPreference)
+            mOptOutSwitchPreference = (SwitchPreference)
                     findPreference(KEY_SHOW_CMAS_OPT_OUT_DIALOG);
             mAlertCategory = (PreferenceCategory)
                     findPreference(KEY_CATEGORY_ALERT_SETTINGS);
 
             if(mSir == null) {
-                mExtremeCheckBox.setEnabled(false);
-                mSevereCheckBox.setEnabled(false);
-                mAmberCheckBox.setEnabled(false);
-                mEmergencyCheckBox.setEnabled(false);
+                mExtremeSwitchPreference.setEnabled(false);
+                mSevereSwitchPreference.setEnabled(false);
+                mAmberSwitchPreference.setEnabled(false);
+                mEmergencySwitchPreference.setEnabled(false);
                 mReminderInterval.setEnabled(false);
                 mAlertDuration.setEnabled(false);
-                mVibrateCheckBox.setEnabled(false);
-                mSpeechCheckBox.setEnabled(false);
-                mEtwsTestCheckBox.setEnabled(false);
-                mChannel50CheckBox.setEnabled(false);
-                mCmasCheckBox.setEnabled(false);
-                mOptOutCheckBox.setEnabled(false);
+                mVibrateSwitchPreference.setEnabled(false);
+                mSpeechSwitchPreference.setEnabled(false);
+                mEtwsTestSwitchPreference.setEnabled(false);
+                mChannel50SwitchPreference.setEnabled(false);
+                mCmasSwitchPreference.setEnabled(false);
+                mOptOutSwitchPreference.setEnabled(false);
                 return;
             }
 
@@ -263,9 +263,9 @@ public class CellBroadcastSettings extends PreferenceActivity {
                                     boolean isExtremeAlertChecked =
                                             ((Boolean) newValue).booleanValue();
 
-                                    if (mSevereCheckBox != null) {
-                                        mSevereCheckBox.setEnabled(isExtremeAlertChecked);
-                                        mSevereCheckBox.setChecked(false);
+                                    if (mSevereSwitchPreference != null) {
+                                        mSevereSwitchPreference.setEnabled(isExtremeAlertChecked);
+                                        mSevereSwitchPreference.setChecked(false);
                                     }
                                     break;
                                 case KEY_ENABLE_CMAS_SEVERE_THREAT_ALERTS:
@@ -335,14 +335,14 @@ public class CellBroadcastSettings extends PreferenceActivity {
             // Show alert settings and ETWS categories for ETWS builds and developer mode.
             if (enableDevSettings || showEtwsSettings) {
                 // enable/disable all alerts
-                if (mEmergencyCheckBox != null) {
+                if (mEmergencySwitchPreference != null) {
                     if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                             SubscriptionManager.CB_EMERGENCY_ALERT, true, this)) {
-                        mEmergencyCheckBox.setChecked(true);
+                        mEmergencySwitchPreference.setChecked(true);
                     } else {
-                        mEmergencyCheckBox.setChecked(false);
+                        mEmergencySwitchPreference.setChecked(false);
                     }
-                    mEmergencyCheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
+                    mEmergencySwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
                 }
 
                 // alert sound duration
@@ -410,14 +410,14 @@ public class CellBroadcastSettings extends PreferenceActivity {
                 prefScreen.removePreference(findPreference(KEY_CATEGORY_DEV_SETTINGS));
             }
 
-            if (mSpeechCheckBox != null) {
+            if (mSpeechSwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_ALERT_SPEECH, true, this)) {
-                    mSpeechCheckBox.setChecked(true);
+                    mSpeechSwitchPreference.setChecked(true);
                 } else {
-                    mSpeechCheckBox.setChecked(false);
+                    mSpeechSwitchPreference.setChecked(false);
                 }
-                mSpeechCheckBox.setOnPreferenceChangeListener(
+                mSpeechSwitchPreference.setOnPreferenceChangeListener(
                         new Preference.OnPreferenceChangeListener() {
                             @Override
                             public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -430,14 +430,14 @@ public class CellBroadcastSettings extends PreferenceActivity {
                         });
             }
 
-            if (mVibrateCheckBox != null) {
+            if (mVibrateSwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_ALERT_VIBRATE, true, this)) {
-                    mVibrateCheckBox.setChecked(true);
+                    mVibrateSwitchPreference.setChecked(true);
                 } else {
-                    mVibrateCheckBox.setChecked(false);
+                    mVibrateSwitchPreference.setChecked(false);
                 }
-                mVibrateCheckBox.setOnPreferenceChangeListener(
+                mVibrateSwitchPreference.setOnPreferenceChangeListener(
                         new Preference.OnPreferenceChangeListener() {
                             @Override
                             public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -450,14 +450,14 @@ public class CellBroadcastSettings extends PreferenceActivity {
                         });
             }
 
-            if (mOptOutCheckBox != null) {
+            if (mOptOutSwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_OPT_OUT_DIALOG, true, this)) {
-                    mOptOutCheckBox.setChecked(true);
+                    mOptOutSwitchPreference.setChecked(true);
                 } else {
-                    mOptOutCheckBox.setChecked(false);
+                    mOptOutSwitchPreference.setChecked(false);
                 }
-                mOptOutCheckBox.setOnPreferenceChangeListener(
+                mOptOutSwitchPreference.setOnPreferenceChangeListener(
                         new Preference.OnPreferenceChangeListener() {
                             @Override
                             public boolean onPreferenceChange(Preference pref, Object newValue) {
@@ -470,71 +470,71 @@ public class CellBroadcastSettings extends PreferenceActivity {
                         });
             }
 
-            if (mChannel50CheckBox != null) {
+            if (mChannel50SwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_CHANNEL_50_ALERT, true, this)) {
-                    mChannel50CheckBox.setChecked(true);
+                    mChannel50SwitchPreference.setChecked(true);
                 } else {
-                    mChannel50CheckBox.setChecked(false);
+                    mChannel50SwitchPreference.setChecked(false);
                 }
-                mChannel50CheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
+                mChannel50SwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
             }
 
-            if (mEtwsTestCheckBox != null) {
+            if (mEtwsTestSwitchPreference != null) {
                 if (!forceDisableEtwsCmasTest &&
                         SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_ETWS_TEST_ALERT, false, this)) {
-                    mEtwsTestCheckBox.setChecked(true);
+                    mEtwsTestSwitchPreference.setChecked(true);
                 } else {
-                    mEtwsTestCheckBox.setChecked(false);
+                    mEtwsTestSwitchPreference.setChecked(false);
                 }
-                mEtwsTestCheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
+                mEtwsTestSwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
             }
 
-            if (mExtremeCheckBox != null) {
+            if (mExtremeSwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_EXTREME_THREAT_ALERT, true, this)) {
-                    mExtremeCheckBox.setChecked(true);
+                    mExtremeSwitchPreference.setChecked(true);
                 } else {
-                    mExtremeCheckBox.setChecked(false);
+                    mExtremeSwitchPreference.setChecked(false);
                 }
-                mExtremeCheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
+                mExtremeSwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
             }
 
-            if (mSevereCheckBox != null) {
+            if (mSevereSwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_SEVERE_THREAT_ALERT, true, this)) {
-                    mSevereCheckBox.setChecked(true);
+                    mSevereSwitchPreference.setChecked(true);
                 } else {
-                    mSevereCheckBox.setChecked(false);
+                    mSevereSwitchPreference.setChecked(false);
                 }
-                mSevereCheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
-                if (mExtremeCheckBox != null) {
+                mSevereSwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
+                if (mExtremeSwitchPreference != null) {
                     boolean isExtremeAlertChecked =
-                            ((CheckBoxPreference) mExtremeCheckBox).isChecked();
-                    mSevereCheckBox.setEnabled(isExtremeAlertChecked);
+                            ((SwitchPreference) mExtremeSwitchPreference).isChecked();
+                    mSevereSwitchPreference.setEnabled(isExtremeAlertChecked);
                 }
             }
 
-            if (mAmberCheckBox != null) {
+            if (mAmberSwitchPreference != null) {
                 if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_AMBER_ALERT, true, this)) {
-                    mAmberCheckBox.setChecked(true);
+                    mAmberSwitchPreference.setChecked(true);
                 } else {
-                    mAmberCheckBox.setChecked(false);
+                    mAmberSwitchPreference.setChecked(false);
                 }
-                mAmberCheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
+                mAmberSwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
             }
 
-            if (mCmasCheckBox != null) {
+            if (mCmasSwitchPreference != null) {
                 if (!forceDisableEtwsCmasTest &&
                         SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
                         SubscriptionManager.CB_CMAS_TEST_ALERT, false, this)) {
-                    mCmasCheckBox.setChecked(true);
+                    mCmasSwitchPreference.setChecked(true);
                 } else {
-                    mCmasCheckBox.setChecked(false);
+                    mCmasSwitchPreference.setChecked(false);
                 }
-                mCmasCheckBox.setOnPreferenceChangeListener(startConfigServiceListener);
+                mCmasSwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
             }
         }
     }
