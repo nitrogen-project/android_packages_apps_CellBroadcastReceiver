@@ -334,16 +334,6 @@ public class CellBroadcastSettings extends PreferenceActivity {
 
             // Show alert settings and ETWS categories for ETWS builds and developer mode.
             if (enableDevSettings || showEtwsSettings) {
-                // enable/disable all alerts
-                if (mEmergencySwitchPreference != null) {
-                    if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
-                            SubscriptionManager.CB_EMERGENCY_ALERT, true, this)) {
-                        mEmergencySwitchPreference.setChecked(true);
-                    } else {
-                        mEmergencySwitchPreference.setChecked(false);
-                    }
-                    mEmergencySwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
-                }
 
                 // alert sound duration
                 queryReturnVal = SubscriptionManager.getIntegerSubscriptionProperty(
@@ -381,7 +371,7 @@ public class CellBroadcastSettings extends PreferenceActivity {
                 }
             } else {
                 // Remove general emergency alert preference items (not shown for CMAS builds).
-                mAlertCategory.removePreference(findPreference(KEY_ENABLE_EMERGENCY_ALERTS));
+
                 mAlertCategory.removePreference(findPreference(KEY_ALERT_SOUND_DURATION));
                 mAlertCategory.removePreference(findPreference(KEY_ENABLE_ALERT_SPEECH));
                 // Remove ETWS test preference category.
@@ -556,6 +546,30 @@ public class CellBroadcastSettings extends PreferenceActivity {
             if (carrierConfig != null) {
                 return carrierConfig.getBoolean(
                         CarrierConfigManager.KEY_CARRIER_FORCE_DISABLE_ETWS_CMAS_TEST_BOOL);
+            }
+        }
+
+        return false;
+    }
+
+    // Check if "Turn on Notifications" option should be always displayed regardless of developer
+    // options turned on or not.
+    public static boolean isEmergencyAlertOnOffOptionEnabled(Context context, int subId) {
+
+        if (context == null) {
+            return false;
+        }
+
+        CarrierConfigManager configManager =
+                (CarrierConfigManager) context.getSystemService(Context.CARRIER_CONFIG_SERVICE);
+
+        if (configManager != null) {
+            PersistableBundle carrierConfig =
+                    configManager.getConfigForSubId(subId);
+
+            if (carrierConfig != null) {
+                return carrierConfig.getBoolean(
+                    CarrierConfigManager.KEY_ALWAYS_SHOW_EMERGENCY_ALERT_ONOFF_BOOL);
             }
         }
 
