@@ -332,6 +332,24 @@ public class CellBroadcastSettings extends PreferenceActivity {
             boolean forceDisableEtwsCmasTest =
                     isEtwsCmasTestMessageForcedDisabled(this, mSir.getSubscriptionId());
 
+            boolean emergencyAlertOnOffOptionEnabled =
+                    isEmergencyAlertOnOffOptionEnabled(this, mSir.getSubscriptionId());
+
+            if (enableDevSettings || showEtwsSettings || emergencyAlertOnOffOptionEnabled) {
+                // enable/disable all alerts except CMAS presidential alerts.
+                if (mEmergencySwitchPreference != null) {
+                    if (SubscriptionManager.getBooleanSubscriptionProperty(mSir.getSubscriptionId(),
+                            SubscriptionManager.CB_EMERGENCY_ALERT, true, this)) {
+                        mEmergencySwitchPreference.setChecked(true);
+                    } else {
+                        mEmergencySwitchPreference.setChecked(false);
+                    }
+                    mEmergencySwitchPreference.setOnPreferenceChangeListener(startConfigServiceListener);
+                }
+            } else {
+                mAlertCategory.removePreference(findPreference(KEY_ENABLE_EMERGENCY_ALERTS));
+            }
+
             // Show alert settings and ETWS categories for ETWS builds and developer mode.
             if (enableDevSettings || showEtwsSettings) {
 
